@@ -10,14 +10,22 @@ import CartSidebar from './CartSidebar';
 import { useAuth } from '../context/AuthContext';
 import Image from 'next/image';
 
+import { useProducts } from '../context/ProductContext';
+
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setIsOpen: setIsCartOpen, totalItems } = useCart();
   const { user } = useAuth();
+  const { products } = useProducts();
+
+  // Extract unique categories for Mega Menu
+  const categories = React.useMemo(() => {
+    return Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
+  }, [products]);
 
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Prodotti', href: '/products' },
+    // 'Prodotti' removed from here to be handled manually
     { name: 'Chi Siamo', href: '/contact' },
   ];
 
@@ -50,15 +58,57 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
+            <Link
+              href="/"
+              className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors"
+            >
+              Home
+            </Link>
+
+            {/* Mega Menu for Prodotti */}
+            <div className="group relative">
               <Link
-                key={item.name}
-                href={item.href}
-                className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors"
+                href="/products"
+                className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors inline-flex items-center gap-1"
               >
-                {item.name}
+                Prodotti
               </Link>
-            ))}
+
+              {/* Dropdown Panel */}
+              <div className="absolute top-full left-0 w-64 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top translate-y-2 group-hover:translate-y-0 ease-out">
+                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                  <div className="p-4 flex flex-col gap-1">
+                    <Link
+                      href="/products"
+                      className="px-4 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors flex justify-between items-center"
+                    >
+                      Tutti i prodotti
+                    </Link>
+                    <div className="h-px bg-gray-100 dark:bg-gray-800 my-1"></div>
+                    {categories.length > 0 ? (
+                      categories.map(cat => (
+                        <Link
+                          key={cat}
+                          href={`/products?category=${encodeURIComponent(cat)}`}
+                          className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                        >
+                          {cat}
+                        </Link>
+                      ))
+                    ) : (
+                      <span className="px-4 py-2 text-sm text-gray-400 italic">Nessuna categoria</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Link
+              href="/contact"
+              className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors"
+            >
+              Chi Siamo
+            </Link>
             {user?.role === 'admin' && (
               <Link
                 href="/admin"

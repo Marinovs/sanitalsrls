@@ -6,10 +6,22 @@ import { useProducts } from '../context/ProductContext';
 import ProductCard from '../components/ProductCard';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 
+import { useSearchParams } from 'next/navigation';
+
 export default function Catalog() {
     const { products } = useProducts();
-    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const searchParams = useSearchParams();
+
+    // Initialize category from URL param or default to 'All'
+    const initialCategory = searchParams.get('category') || 'All';
+    const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
     const [showFilters, setShowFilters] = useState(false);
+
+    // Update state if URL param changes
+    React.useEffect(() => {
+        const cat = searchParams.get('category');
+        if (cat) setSelectedCategory(cat);
+    }, [searchParams]);
 
     // Extract unique categories
     const categories = useMemo(() => {

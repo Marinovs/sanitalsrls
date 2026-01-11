@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Sanital Palette - Light Mode */
+  --sanital-blue-dark: #1B3C73; 
+  --sanital-blue-light: #2D8BBA;
+  --sanital-grey: #6B7280;
+  --card-bg: #ffffff;
+  --card-border: #f3f4f6; /* gray-100 */
 }
 
 @theme inline {
@@ -10,13 +19,27 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  --color-sanital-dark: var(--sanital-blue-dark);
+  --color-sanital-light: var(--sanital-blue-light);
+  --color-sanital-grey: var(--sanital-grey);
+  
+  --color-card: var(--card-bg);
+  --color-card-border: var(--card-border);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  
+  /* Sanital Palette - Dark Mode Adjustment */
+  /* Lighten the dark blue so it's visible on black */
+  --sanital-blue-dark: #4d7bd6; 
+  --sanital-blue-light: #5bbceb;
+  --sanital-grey: #9ca3af; /* lighter grey */
+  
+  --card-bg: #171717; /* neutral-900 */
+  --card-border: #262626; /* neutral-800 */
 }
 
 body {

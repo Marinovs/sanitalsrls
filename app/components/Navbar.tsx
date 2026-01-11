@@ -1,0 +1,172 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Menu, X, Phone, User, ShoppingBag, Sun, Moon } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
+import { useCart } from '../context/CartContext';
+import CartSidebar from './CartSidebar';
+
+import { useAuth } from '../context/AuthContext';
+import Image from 'next/image';
+
+export default function Navbar() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { setIsOpen: setIsCartOpen, totalItems } = useCart();
+  const { user } = useAuth();
+
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Prodotti', href: '/products' },
+    { name: 'Chi Siamo', href: '/contact' },
+  ];
+
+  return (
+    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+      {/* Cart Sidebar loaded here to be accessible globally via context */}
+      <CartSidebar />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-20 items-center">
+          {/* Logo Section */}
+          <div className="shrink-0 flex items-center">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="h-12 w-auto flex items-center justify-center transition-colors">
+                <Image
+                  src="/logo.png"
+                  alt="Sanital Logo"
+                  width={150} // Increased width for aspect ratio
+                  height={50}
+                  className="h-full w-auto object-contain"
+                  priority
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold text-sanital-dark dark:text-white leading-none tracking-tight">SANITAL</span>
+                <span className="text-xs text-sanital-grey dark:text-gray-400 font-medium tracking-widest uppercase hidden sm:block">Detergenza Industriale</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+            {user?.role === 'admin' && (
+              <Link
+                href="/admin"
+                className="text-red-600 hover:text-red-800 font-medium transition-colors"
+              >
+                Admin
+              </Link>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
+
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-sanital-light dark:hover:text-white transition-colors focus:outline-none"
+              aria-label="Open Cart"
+            >
+              <ShoppingBag className="h-6 w-6" />
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+
+            <div className="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-2"></div>
+
+            <Link
+              href="/contact"
+              className="text-gray-400 dark:text-gray-400 hover:text-sanital-light dark:hover:text-white transition-colors"
+            >
+              <Phone className="h-5 w-5" />
+            </Link>
+            <Link
+              href={user ? "/profile" : "/login"}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sanital-dark rounded-full hover:bg-sanital-light shadow-lg hover:shadow-xl transition-all"
+            >
+              <User className="h-4 w-4" />
+              <span>{user ? 'Profilo' : 'Area Clienti'}</span>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center gap-4">
+            <ThemeToggle />
+
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-sanital-light dark:hover:text-white transition-colors"
+            >
+              <ShoppingBag className="h-6 w-6" />
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sanital-light"
+            >
+              <span className="sr-only">Open main menu</span>
+              {isMobileMenuOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-sanital-light dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+            {user?.role === 'admin' && (
+              <Link
+                href="/admin"
+                className="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Admin Panel
+              </Link>
+            )}
+            <Link
+              href={user ? "/profile" : "/login"}
+              className="block px-3 py-2 rounded-md text-base font-medium text-sanital-light dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 font-bold"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {user ? 'Profilo' : 'Area Clienti'}
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}

@@ -186,7 +186,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] bg-white dark:bg-black flex flex-col pt-4 overflow-y-auto min-h-screen">
+        <div className="fixed inset-0 z-60 bg-white dark:bg-black flex flex-col pt-4 overflow-y-auto min-h-screen">
           <div className="flex justify-end px-4 sm:px-6 mb-8">
             <button
               onClick={() => setIsMobileMenuOpen(false)}

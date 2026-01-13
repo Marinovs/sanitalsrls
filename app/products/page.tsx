@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useProducts } from '../context/ProductContext';
 import ProductCard from '../components/ProductCard';
-import { Filter, SlidersHorizontal } from 'lucide-react';
+import { Filter, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 import { useSearchParams } from 'next/navigation';
 
-export default function Catalog() {
+function CatalogContent() {
     const { products } = useProducts();
     const searchParams = useSearchParams();
 
@@ -106,5 +106,17 @@ export default function Catalog() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function Catalog() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
+                <Loader2 className="h-8 w-8 animate-spin text-sanital-light" />
+            </div>
+        }>
+            <CatalogContent />
+        </Suspense>
     );
 }

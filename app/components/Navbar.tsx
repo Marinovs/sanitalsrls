@@ -184,35 +184,55 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
-          <div className="px-2 pt-2 pb-3 space-y-1">
+        <div className="fixed inset-0 z-[60] bg-white dark:bg-black flex flex-col pt-4 overflow-y-auto min-h-screen">
+          <div className="flex justify-end px-4 sm:px-6 mb-8">
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
+            >
+              <X className="h-8 w-8" />
+            </button>
+          </div>
+
+          <div className="flex flex-col items-center justify-center space-y-8 flex-1 pb-20">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-sanital-light dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900"
+                className="text-3xl font-bold text-gray-900 dark:text-white hover:text-sanital-light dark:hover:text-sanital-light transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
+            <Link
+              href="/products"
+              className="text-3xl font-bold text-gray-900 dark:text-white hover:text-sanital-light dark:hover:text-sanital-light transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Prodotti
+            </Link>
             {user?.role === 'admin' && (
               <Link
                 href="/admin"
-                className="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50"
+                className="text-xl font-bold text-red-600 hover:text-red-500"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Admin Panel
               </Link>
             )}
+
+            <div className="w-16 h-1 bg-gray-100 dark:bg-gray-800 rounded-full my-4"></div>
+
             <Link
               href={user ? "/profile" : "/login"}
-              className="block px-3 py-2 rounded-md text-base font-medium text-sanital-light dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 font-bold"
+              className="flex items-center gap-3 px-8 py-4 text-xl font-medium text-white bg-sanital-dark rounded-full hover:bg-sanital-light shadow-xl hover:shadow-2xl transition-all"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {user ? 'Profilo' : 'Area Clienti'}
+              <User className="h-6 w-6" />
+              <span>{user ? 'Profilo' : 'Area Clienti'}</span>
             </Link>
           </div>
         </div>

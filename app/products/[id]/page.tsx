@@ -25,7 +25,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
             const found = products.find(p => p.id === id);
             setProduct(found);
             if (found) {
-                setActiveImage(found.image_main);
+                setActiveImage(found.img);
             }
         }
     }, [products, id]);
@@ -45,9 +45,11 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     }
 
     const images = [
-        product.image_main,
-        product.image_sub1,
-        product.image_sub2
+        product.img,
+        product.img1,
+        product.img2,
+        product.img3,
+        product.img4,
     ].filter(Boolean);
 
     return (
@@ -64,7 +66,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                         <div className="relative w-full aspect-square rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 overflow-hidden flex items-center justify-center p-8">
                             <div className="relative w-full h-full">
                                 <Image
-                                    src={activeImage.startsWith('/') ? activeImage : '/logo.jpg'} // Fallback
+                                    src={activeImage ? `/products/${activeImage}` : '/logo.png'} // Fallback
                                     alt={product.name}
                                     fill
                                     className="object-contain"
@@ -83,7 +85,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                     `}
                                     >
                                         <Image
-                                            src={img.startsWith('/') ? img : '/logo.jpg'}
+                                            src={img ? `/products/${img}` : '/logo.png'}
                                             alt="Product view"
                                             fill
                                             className="object-contain p-2"

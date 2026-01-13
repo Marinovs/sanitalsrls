@@ -56,9 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const login = async (email: string, password: string) => {
         try {
-            console.log("Attempting login for:", email);
             const response = await api.post('/auth/login', { email, password });
-            console.log("Login response data:", response.data);
 
             const { access_token } = response.data;
             if (!access_token) {
@@ -72,9 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // 1. Try to get user data from Token
             let userData: User | null = null;
             try {
-                console.log("Decoding token...");
                 const decoded = jwtDecode<JwtPayload>(access_token);
-                console.log("Decoded token:", decoded);
 
                 if (decoded.role) {
                     userData = {
@@ -89,11 +85,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             // 2. If token lacked role, fetch from UsersController profile endpoint
             if (!userData || !userData.role) {
-                console.log("Token missing role, fetching /users/profile...");
                 try {
                     // Using the endpoint from the provided UsersController: @Get('profile') in @Controller('users')
                     const profileResponse = await api.get('/users/profile');
-                    console.log("Profile response:", profileResponse.data);
 
                     const profileData = profileResponse.data;
                     userData = {
@@ -115,11 +109,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(userData);
             localStorage.setItem('sanital_user', JSON.stringify(userData));
 
-            console.log("Login successful. Role:", userData?.role);
-            console.log("Redirecting to /...");
-
             // Force hard redirect to ensure state is clear and UI updates
-            // window.location.href = '/';
+            window.location.href = '/';
 
         } catch (error: any) {
             console.error("Login failed:", error);

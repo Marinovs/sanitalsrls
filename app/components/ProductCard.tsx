@@ -28,7 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="relative h-48 w-full mb-4 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-gray-700 transition-colors">
                 <div className="relative w-full h-full">
                     <Image
-                        src={product.image_main.startsWith('/') ? product.image_main : '/logo.png'} // Fallback logic
+                        src={product.img ? `/products/${product.img}` : '/logo.png'} // Fallback logic
                         alt={product.name}
                         fill
                         className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"

@@ -9,9 +9,12 @@ export interface Product {
     description: string;
     price: number;
     category: string;
-    image_main: string;
-    image_sub1?: string;
-    image_sub2?: string;
+    img: string;
+    img1?: string;
+    img2?: string;
+    img3?: string;
+    img4?: string;
+    onHomepage?: boolean;
 }
 
 interface ProductContextType {
@@ -32,7 +35,6 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
                 const response = await api.get('/products');
                 // The API returns an array of products directly or data: products
                 // Adjust based on your NestJS controller response
-                console.log(response.data);
                 setProducts(response.data);
             } catch (error) {
                 console.error("Failed to fetch products from API", error);

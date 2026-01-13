@@ -93,7 +93,7 @@ export default function CartSidebar() {
                                         <div className="flex gap-4">
                                             <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg border border-gray-100 dark:border-gray-700 bg-white">
                                                 <Image
-                                                    src={"./products/" + item.product.img || '/placeholder.jpg'}
+                                                    src={"/products/" + item.product.img || '/placeholder.jpg'}
                                                     alt={item.product.name}
                                                     width={96}
                                                     height={96}

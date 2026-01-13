@@ -25,6 +25,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -50,14 +51,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 localStorage.removeItem('sanital_cart');
             }
         }
+        setIsLoaded(true);
     }, []);
 
     // Save to localStorage whenever items change
     useEffect(() => {
-        if (items.length > 0) {
+        if (isLoaded) {
             localStorage.setItem('sanital_cart', JSON.stringify(items));
         }
-    }, [items]);
+    }, [items, isLoaded]);
 
     const addToCart = (product: Product, quantity = 1) => {
         setItems(prev => {
@@ -71,7 +73,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             }
             return [...prev, { product, quantity }];
         });
-        setIsOpen(true); // Open cart when adding item
+        // setIsOpen(true); // Auto-open disabled
     };
 
     const removeFromCart = (productId: string) => {

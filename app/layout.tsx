@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CookieBanner from "./components/CookieBanner";
+import CartSidebar from "./components/CartSidebar";
 import { Providers } from "./providers";
 
 const geistSans = Geist({
@@ -55,6 +56,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white dark:bg-black text-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
         <Providers>
+          <CartSidebar />
           <Navbar />
           <main className="grow bg-gray-50 dark:bg-black/50">
             {children}

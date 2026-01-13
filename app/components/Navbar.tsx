@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Menu, X, Phone, User, ShoppingBag, Sun, Moon } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { useCart } from '../context/CartContext';
-import CartSidebar from './CartSidebar';
+
 
 import { useAuth } from '../context/AuthContext';
 import Image from 'next/image';
@@ -31,8 +31,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
-      {/* Cart Sidebar loaded here to be accessible globally via context */}
-      <CartSidebar />
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">

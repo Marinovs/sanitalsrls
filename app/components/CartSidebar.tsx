@@ -38,7 +38,7 @@ export default function CartSidebar() {
     };
 
     return (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className="fixed inset-0 z-[100] overflow-hidden">
             <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
                 onClick={() => setIsOpen(false)}

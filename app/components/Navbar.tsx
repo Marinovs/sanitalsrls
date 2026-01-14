@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Phone, User, ShoppingBag, Sun, Moon } from 'lucide-react';
+import { Menu, X, Phone, User, ShoppingBag } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import LanguageToggle from './LanguageToggle';
 import { useCart } from '../context/CartContext';
-
-
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Image from 'next/image';
-
 import { useProducts } from '../context/ProductContext';
 
 export default function Navbar() {
@@ -17,6 +16,7 @@ export default function Navbar() {
   const { setIsOpen: setIsCartOpen, totalItems } = useCart();
   const { user } = useAuth();
   const { products } = useProducts();
+  const { t } = useLanguage();
 
   // Extract unique categories for Mega Menu
   const categories = React.useMemo(() => {
@@ -24,9 +24,9 @@ export default function Navbar() {
   }, [products]);
 
   const navigation = [
-    { name: 'Home', href: '/' },
+    { name: t('navbar.home'), href: '/' },
     // 'Prodotti' removed from here to be handled manually
-    { name: 'Chi Siamo', href: '/contact' },
+    { name: t('navbar.about'), href: '/contact' },
   ];
 
   return (
@@ -61,7 +61,7 @@ export default function Navbar() {
               href="/"
               className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors"
             >
-              Home
+              {t('navbar.home')}
             </Link>
 
             {/* Mega Menu for Prodotti */}
@@ -70,7 +70,7 @@ export default function Navbar() {
                 href="/products"
                 className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors inline-flex items-center gap-1"
               >
-                Prodotti
+                {t('navbar.products')}
               </Link>
 
               {/* Dropdown Panel */}
@@ -81,7 +81,7 @@ export default function Navbar() {
                       href="/products"
                       className="px-4 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors flex justify-between items-center"
                     >
-                      Tutti i prodotti
+                      {t('admin.allCategories')}
                     </Link>
                     <div className="h-px bg-gray-100 dark:bg-gray-800 my-1"></div>
                     {categories.length > 0 ? (
@@ -106,20 +106,21 @@ export default function Navbar() {
               href="/contact"
               className="text-gray-600 dark:text-gray-300 hover:text-sanital-light dark:hover:text-white font-medium transition-colors"
             >
-              Chi Siamo
+              {t('navbar.contact')}
             </Link>
             {user?.role === 'admin' && (
               <Link
                 href="/admin"
                 className="text-red-600 hover:text-red-800 font-medium transition-colors"
               >
-                Admin
+                {t('navbar.admin')}
               </Link>
             )}
           </div>
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-4">
+            <LanguageToggle />
             <ThemeToggle />
 
             <button
@@ -148,12 +149,13 @@ export default function Navbar() {
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sanital-dark rounded-full hover:bg-sanital-light shadow-lg hover:shadow-xl transition-all"
             >
               <User className="h-4 w-4" />
-              <span>{user ? 'Profilo' : 'Area Clienti'}</span>
+              <span>{user ? t('navbar.profile') : t('common.login')}</span>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-4">
+            <LanguageToggle />
             <ThemeToggle />
 
             <button
@@ -211,7 +213,7 @@ export default function Navbar() {
               className="text-3xl font-bold text-gray-900 dark:text-white hover:text-sanital-light dark:hover:text-sanital-light transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Prodotti
+              {t('navbar.products')}
             </Link>
             {user?.role === 'admin' && (
               <Link
@@ -219,7 +221,7 @@ export default function Navbar() {
                 className="text-xl font-bold text-red-600 hover:text-red-500"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Admin Panel
+                {t('navbar.admin')}
               </Link>
             )}
 
@@ -231,7 +233,7 @@ export default function Navbar() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <User className="h-6 w-6" />
-              <span>{user ? 'Profilo' : 'Area Clienti'}</span>
+              <span>{user ? t('navbar.profile') : t('common.login')}</span>
             </Link>
           </div>
         </div>

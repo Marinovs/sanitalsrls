@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
                 <p className="text-gray-600 dark:text-gray-300">
                     Sanital Srls<br />
                     Via Quercete 43, 81016 San Potito Sannitico (CE)<br />
-                    Email: sanitalsrls@legalman.it
+                    Email: sanitalsrls@gmail.com
                 </p>
 
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4">3. Dati Raccogliamo</h2>

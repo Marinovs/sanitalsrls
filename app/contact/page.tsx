@@ -54,7 +54,7 @@ export default function Contact() {
                                         Per info generali e commerciali
                                     </p>
                                     <a href="mailto:info@sanitalsrls.it" className="mt-1 text-lg font-semibold text-sanital-dark dark:text-sanital-light hover:underline">
-                                        sanitalsrls@legalman.it
+                                        sanitalsrls@gmail.com
                                     </a>
                                 </div>
                             </div>

@@ -110,7 +110,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem('sanital_user', JSON.stringify(userData));
 
             // Force hard redirect to ensure state is clear and UI updates
-            window.location.href = '/';
+            // Force hard redirect to ensure state is clear and UI updates
+            const searchParams = new URLSearchParams(window.location.search);
+            const redirectUrl = searchParams.get('redirect');
+            window.location.href = redirectUrl || '/';
 
         } catch (error: any) {
             console.error("Login failed:", error);

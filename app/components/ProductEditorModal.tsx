@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Product } from '../context/ProductContext';
-import { X, Save, Trash2, Image as ImageIcon } from 'lucide-react';
+import { X, Save, Trash2, Image as ImageIcon, Upload } from 'lucide-react';
 import api from '../services/api';
 import Image from 'next/image';
 
@@ -14,6 +14,8 @@ interface ProductEditorModalProps {
 
 export default function ProductEditorModal({ product, onClose, onSave }: ProductEditorModalProps) {
     const [formData, setFormData] = useState<Product>({ ...product });
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,14 +27,34 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
         }));
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
 
         try {
-            // Using PATCH for partial update
-            await api.patch(`/products/${product.id}`, formData);
+            // Using PUT for partial update
+            await api.put(`/products/${product._id}`, formData);
+
+            // Upload image if selected
+            if (selectedFile) {
+                const uploadData = new FormData();
+                uploadData.append('file', selectedFile);
+                await api.post(`/products/${product._id}/upload`, uploadData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            }
+
             onSave();
             onClose();
         } catch (err: any) {
@@ -48,7 +70,7 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
 
         setIsLoading(true);
         try {
-            await api.delete(`/products/${product.id}`);
+            await api.delete(`/products/${product._id}`);
             onSave();
             onClose();
         } catch (err: any) {
@@ -139,14 +161,38 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
 
                             <div className="space-y-3">
                                 <div className="space-y-1">
-                                    <label className="block text-xs text-gray-500 dark:text-gray-400">Immagine Principale</label>
-                                    <input
-                                        type="text"
-                                        name="img"
-                                        value={formData.img}
-                                        onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-xs text-gray-600 dark:text-gray-300 focus:ring-2 focus:ring-sanital-light outline-none"
-                                    />
+                                    <label className="block text-xs text-gray-500 dark:text-gray-400">Immagine Principale (URL o Upload)</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            name="img"
+                                            value={formData.img}
+                                            onChange={handleChange}
+                                            placeholder="URL immagine o lascia vuoto per upload"
+                                            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-xs text-gray-600 dark:text-gray-300 focus:ring-2 focus:ring-sanital-light outline-none"
+                                        />
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                id="file-upload"
+                                                accept=".png,.jpeg,.jpg"
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                            />
+                                            <label
+                                                htmlFor="file-upload"
+                                                className="flex items-center justify-center h-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                                title="Carica immagine"
+                                            >
+                                                <Upload className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {previewUrl && (
+                                        <div className="mt-2 relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                                            <Image src={previewUrl} alt="Preview" fill className="object-cover" />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">

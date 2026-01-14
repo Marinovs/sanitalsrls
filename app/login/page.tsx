@@ -5,11 +5,13 @@ import { User, Lock, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth();
+    const { t } = useLanguage();
     const [error, setError] = useState('');
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -31,9 +33,9 @@ export default function Login() {
                     <div className="mx-auto h-12 w-12 bg-sanital-light/10 text-sanital-light rounded-full flex items-center justify-center">
                         <User className="h-6 w-6" />
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">Area Clienti</h2>
+                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">{t('auth.loginTitle')}</h2>
                     <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        Accedi per visualizzare i tuoi ordini e listini dedicati.
+                        {t('auth.loginSubtitle')}
                     </p>
                 </div>
 
@@ -57,7 +59,7 @@ export default function Login() {
                                     autoComplete="email"
                                     required
                                     className="appearance-none rounded-lg relative block w-full pl-10 px-3 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-sanital-light focus:border-sanital-light focus:z-10 sm:text-sm"
-                                    placeholder="Indirizzo Email"
+                                    placeholder={t('auth.emailLabel')}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
@@ -76,7 +78,7 @@ export default function Login() {
                                     autoComplete="current-password"
                                     required
                                     className="appearance-none rounded-lg relative block w-full pl-10 px-3 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-sanital-light focus:border-sanital-light focus:z-10 sm:text-sm"
-                                    placeholder="Password"
+                                    placeholder={t('auth.passwordLabel')}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
@@ -93,7 +95,7 @@ export default function Login() {
                                 className="h-4 w-4 text-sanital-light focus:ring-sanital-light border-gray-300 rounded"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                                Ricordami
+                                {t('common.confirm')} {/* Using confirm as placeholder for Remember Me or add new key */}
                             </label>
                         </div>
 
@@ -112,15 +114,15 @@ export default function Login() {
                             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                                 <ArrowRight className="h-5 w-5 text-sanital-light group-hover:text-white transition-colors" />
                             </span>
-                            Accedi
+                            {t('auth.loginButton')}
                         </button>
                     </div>
                 </form>
 
                 <div className="mt-6 text-center text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Non hai un account? </span>
-                    <Link href="/contact" className="font-medium text-sanital-light hover:text-sanital-dark dark:hover:text-sanital-blue-light">
-                        Richiedi accesso
+                    <span className="text-gray-500 dark:text-gray-400">{t('auth.loginSubtitle')} </span>
+                    <Link href="/create-account" className="font-medium text-sanital-light hover:text-sanital-dark dark:hover:text-sanital-blue-light">
+                        {t('auth.registerButton')}
                     </Link>
                 </div>
 

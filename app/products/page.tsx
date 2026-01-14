@@ -3,6 +3,7 @@
 import React, { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useProducts } from '../context/ProductContext';
+import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 import { Filter, SlidersHorizontal, Loader2 } from 'lucide-react';
 
@@ -10,6 +11,7 @@ import { useSearchParams } from 'next/navigation';
 
 function CatalogContent() {
     const { products } = useProducts();
+    const { t } = useLanguage();
     const searchParams = useSearchParams();
 
     // Initialize category from URL param or default to 'All'
@@ -37,8 +39,8 @@ function CatalogContent() {
     if (products.length === 0) {
         return (
             <div className="min-h-[50vh] flex flex-col items-center justify-center p-8 bg-white dark:bg-black transition-colors">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Il catalogo è vuoto</h2>
-                <p className="text-gray-500 dark:text-gray-400 mb-8">Nessun prodotto disponibile al momento.</p>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t('catalog.empty')}</h2>
+                <p className="text-gray-500 dark:text-gray-400 mb-8">{t('catalog.emptyDesc')}</p>
             </div>
         );
     }
@@ -49,9 +51,9 @@ function CatalogContent() {
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                     <div>
-                        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">Catalogo Prodotti</h1>
+                        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">{t('catalog.title')}</h1>
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            {filteredProducts.length} prodotti trovati
+                            {filteredProducts.length} {t('catalog.productsFound')}
                         </p>
                     </div>
 
@@ -60,7 +62,7 @@ function CatalogContent() {
                         onClick={() => setShowFilters(!showFilters)}
                         className="mt-4 md:hidden flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
-                        <Filter className="mr-2 h-4 w-4" /> Filtri
+                        <Filter className="mr-2 h-4 w-4" /> {t('catalog.filters')}
                     </button>
                 </div>
 
@@ -71,7 +73,7 @@ function CatalogContent() {
                         <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 sticky top-24">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center">
-                                    <SlidersHorizontal className="mr-2 h-4 w-4" /> Categorie
+                                    <SlidersHorizontal className="mr-2 h-4 w-4" /> {t('catalog.categories')}
                                 </h3>
                             </div>
                             <ul className="space-y-2">
@@ -84,7 +86,7 @@ function CatalogContent() {
                                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-sanital-light dark:hover:text-sanital-light'
                                                 }`}
                                         >
-                                            {category} <span className="text-xs opacity-70 ml-1">
+                                            {category === 'All' ? t('catalog.allCategories') : category} <span className="text-xs opacity-70 ml-1">
                                                 ({category === 'All' ? products.length : products.filter(p => p.category === category).length})
                                             </span>
                                         </button>
@@ -98,7 +100,7 @@ function CatalogContent() {
                     <div className="flex-1">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} />
+                                <ProductCard key={product._id} product={product} />
                             ))}
                         </div>
                     </div>

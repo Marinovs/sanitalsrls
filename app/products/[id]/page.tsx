@@ -4,6 +4,7 @@ import { useState, use, useEffect } from 'react';
 import Link from 'next/link';
 import { useProducts } from '../../context/ProductContext';
 import { useCart } from '../../context/CartContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { ArrowLeft, Check, ShieldCheck, Truck, ShoppingCart, Plus, Minus } from 'lucide-react';
 import Image from 'next/image';
 
@@ -15,6 +16,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
     const { products } = useProducts();
     const { addToCart } = useCart();
+    const { t } = useLanguage();
 
     const [product, setProduct] = useState<any>(null);
     const [activeImage, setActiveImage] = useState<string>('');
@@ -22,7 +24,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
     useEffect(() => {
         if (products.length > 0) {
-            const found = products.find(p => p.id === id);
+            const found = products.find(p => p._id === id);
             setProduct(found);
             if (found) {
                 setActiveImage(found.img);
@@ -41,7 +43,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     }
 
     if (!product) {
-        return <div className="p-8 text-center">Prodotto non trovato.</div>;
+        return <div className="p-8 text-center">{t('product.notFound')}</div>;
     }
 
     const images = [
@@ -56,7 +58,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
         <div className="bg-white dark:bg-black min-h-screen py-12 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Link href="/products" className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-sanital-dark dark:hover:text-white mb-8">
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Torna al catalogo
+                    <ArrowLeft className="mr-2 h-4 w-4" /> {t('product.backToCatalog')}
                 </Link>
 
                 <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
@@ -66,7 +68,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                         <div className="relative w-full aspect-square rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 overflow-hidden flex items-center justify-center p-8">
                             <div className="relative w-full h-full">
                                 <Image
-                                    src={activeImage ? `/products/${activeImage}` : '/logo.png'} // Fallback
+                                    src={activeImage ? (activeImage.startsWith('http') ? activeImage : `${process.env.NEXT_PUBLIC_API_URL}${activeImage}`) : '/logo.png'}
                                     alt={product.name}
                                     fill
                                     className="object-contain"
@@ -85,7 +87,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                     `}
                                     >
                                         <Image
-                                            src={img ? `/products/${img}` : '/logo.png'}
+                                            src={img ? (img.startsWith('http') ? img : `${process.env.NEXT_PUBLIC_API_URL}${img}`) : '/logo.png'}
                                             alt="Product view"
                                             fill
                                             className="object-contain p-2"
@@ -113,19 +115,19 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                         </div>
 
                         <div className="border-t border-gray-100 dark:border-gray-800 pt-8">
-                            <h3 className="text-sm font-medium text-gray-900 dark:text-white">Perché scegliere questo prodotto?</h3>
+                            <h3 className="text-sm font-medium text-gray-900 dark:text-white">{t('product.whyChoose')}</h3>
                             <div className="mt-4 space-y-3">
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                     <Check className="shrink-0 h-5 w-5 text-green-500 mr-2" />
-                                    Disponibilità immediata
+                                    {t('product.availability')}
                                 </div>
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                     <ShieldCheck className="shrink-0 h-5 w-5 text-sanital-light mr-2" />
-                                    Garanzia di qualità Sanital
+                                    {t('product.quality')}
                                 </div>
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                     <Truck className="shrink-0 h-5 w-5 text-gray-400 mr-2" />
-                                    Spedizione in tutta Italia
+                                    {t('product.shipping')}
                                 </div>
                             </div>
                         </div>
@@ -133,7 +135,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                         {/* Add to Cart Section */}
                         <div className="mt-10 border-t border-gray-100 dark:border-gray-800 pt-8">
                             <div className="flex items-center mb-6">
-                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-white">Quantità:</span>
+                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-white">{t('product.quantity')}:</span>
                                 <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-md">
                                     <button
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -157,13 +159,13 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                                     className="flex-1 bg-sanital-light border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-sanital-blue-dark transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sanital-light shadow-lg hover:shadow-xl"
                                 >
                                     <ShoppingCart className="mr-2 h-5 w-5" />
-                                    Aggiungi al Carrello
+                                    {t('product.addToCart')}
                                 </button>
                                 <Link
                                     href={`mailto:info@sanitalsrls.it?subject=Info Prodotto: ${product.name}`}
                                     className="flex-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sanital-light"
                                 >
-                                    Richiedi Info
+                                    {t('product.requestInfo')}
                                 </Link>
                             </div>
                         </div>

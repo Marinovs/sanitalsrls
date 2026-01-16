@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useProducts } from "./context/ProductContext";
 import ProductCard from "./components/ProductCard";
+import SearchBar from "./components/SearchBar";
 import { useState } from "react";
 
 export default function Home() {
@@ -39,6 +40,10 @@ export default function Home() {
               Soluzioni avanzate per la pulizia industriale e civile.
               Prodotti certificati per garantire il massimo risultato, rispettando l'ambiente.
             </p>
+
+            <div className="w-full max-w-lg mx-auto mb-10">
+              <SearchBar showSuggestions={true} className="shadow-lg shadow-blue-500/10" />
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
               <Link

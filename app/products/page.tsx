@@ -6,6 +6,7 @@ import { useProducts } from '../context/ProductContext';
 import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 import { Filter, SlidersHorizontal, Loader2 } from 'lucide-react';
+import SearchBar from '../components/SearchBar';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -16,13 +17,20 @@ function CatalogContent() {
 
     // Initialize category from URL param or default to 'All'
     const initialCategory = searchParams.get('category') || 'All';
+    // Initialize search query from URL param
+    const initialSearch = searchParams.get('search') || '';
+
     const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+    const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
     const [showFilters, setShowFilters] = useState(false);
 
     // Update state if URL param changes
     React.useEffect(() => {
         const cat = searchParams.get('category');
         if (cat) setSelectedCategory(cat);
+
+        const search = searchParams.get('search');
+        setSearchQuery(search || '');
     }, [searchParams]);
 
     // Extract unique categories
@@ -32,9 +40,24 @@ function CatalogContent() {
     }, [products]);
 
     const filteredProducts = useMemo(() => {
-        if (selectedCategory === 'All') return products;
-        return products.filter(p => p.category === selectedCategory);
-    }, [products, selectedCategory]);
+        let result = products;
+
+        // Filter by category
+        if (selectedCategory !== 'All') {
+            result = result.filter(p => p.category === selectedCategory);
+        }
+
+        // Filter by search query
+        if (searchQuery) {
+            const lowerQuery = searchQuery.toLowerCase();
+            result = result.filter(p =>
+                p.name.toLowerCase().includes(lowerQuery) ||
+                p.description.toLowerCase().includes(lowerQuery)
+            );
+        }
+
+        return result;
+    }, [products, selectedCategory, searchQuery]);
 
     if (products.length === 0) {
         return (
@@ -55,6 +78,10 @@ function CatalogContent() {
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                             {filteredProducts.length} {t('catalog.productsFound')}
                         </p>
+                    </div>
+
+                    <div className="mt-4 md:mt-0 md:w-1/3">
+                        <SearchBar showSuggestions={false} placeholder={t('Cerca prodotti...') || "Cerca prodotti..."} />
                     </div>
 
                     {/* Mobile Filter Toggle */}

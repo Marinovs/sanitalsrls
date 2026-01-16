@@ -81,7 +81,7 @@ function CatalogContent() {
                     </div>
 
                     <div className="mt-4 md:mt-0 md:w-1/3">
-                        <SearchBar showSuggestions={false} placeholder={t('Cerca prodotti...') || "Cerca prodotti..."} />
+                        <SearchBar showSuggestions={false} placeholder={t('Cerca prodotti...')} />
                     </div>
 
                     {/* Mobile Filter Toggle */}

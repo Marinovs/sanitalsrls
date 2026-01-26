@@ -13,6 +13,8 @@ interface ProductEditorModalProps {
 }
 
 export default function ProductEditorModal({ product, onClose, onSave }: ProductEditorModalProps) {
+    // Check if we are creating a new product (no ID)
+    const isCreating = !product._id;
     const [formData, setFormData] = useState<Product>({ ...product });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -41,14 +43,23 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
         setError(null);
 
         try {
-            // Using PUT for partial update
-            await api.put(`/products/${product._id}`, formData);
+            let productId = product._id;
+
+            if (isCreating) {
+                // Create new product
+                const response = await api.post('/products', formData);
+                productId = response.data._id; // Assume backend returns the created object with _id
+            } else {
+                // Update existing product
+                await api.put(`/products/${product._id}`, formData);
+            }
 
             // Upload image if selected
             if (selectedFile) {
                 const uploadData = new FormData();
                 uploadData.append('file', selectedFile);
-                await api.post(`/products/${product._id}/upload`, uploadData, {
+                // Use the correct ID (newly created or existing)
+                await api.post(`/products/${productId}/upload`, uploadData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -58,8 +69,8 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
             onSave();
             onClose();
         } catch (err: any) {
-            console.error("Failed to update product", err);
-            setError(err.response?.data?.message || 'Errore durante l\'aggiornamento del prodotto.');
+            console.error("Failed to save product", err);
+            setError(err.response?.data?.message || 'Errore durante il salvataggio del prodotto.');
         } finally {
             setIsLoading(false);
         }
@@ -88,7 +99,9 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
 
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Modifica Prodotto</h2>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                        {isCreating ? 'Nuovo Prodotto' : 'Modifica Prodotto'}
+                    </h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                         <X className="h-6 w-6" />
                     </button>
@@ -246,8 +259,8 @@ export default function ProductEditorModal({ product, onClose, onSave }: Product
                     <button
                         type="button"
                         onClick={handleDelete}
-                        className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors text-sm font-medium"
-                        disabled={isLoading}
+                        className={`flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors text-sm font-medium ${isCreating ? 'invisible' : ''}`}
+                        disabled={isLoading || isCreating}
                     >
                         <Trash2 className="h-4 w-4" />
                         Elimina

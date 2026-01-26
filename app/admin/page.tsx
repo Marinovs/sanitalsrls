@@ -7,7 +7,7 @@ import { useProducts, Product } from '../context/ProductContext';
 import { useLanguage } from '../context/LanguageContext';
 import CsvUploader from '../components/CsvUploader';
 import ProductEditorModal from '../components/ProductEditorModal';
-import { ShieldAlert, LayoutDashboard, LogOut, Search, Edit, Package, ChevronDown, ChevronUp } from 'lucide-react';
+import { ShieldAlert, LayoutDashboard, LogOut, Search, Edit, Package, ChevronDown, ChevronUp, Plus } from 'lucide-react';
 import Image from 'next/image';
 import api from '../services/api';
 
@@ -27,9 +27,24 @@ export default function AdminDashboard() {
     const [isUploadCollapsed, setIsUploadCollapsed] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
 
+
     const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'users'>('products');
     const [orders, setOrders] = useState<any[]>([]);
     const [usersList, setUsersList] = useState<any[]>([]);
+
+    const handleCreateProduct = () => {
+        setEditingProduct({
+            _id: '',
+            name: '',
+            description: '',
+            price: 0,
+            category: '',
+            img: '',
+            img1: '',
+            img2: '',
+            img3: '',
+        });
+    };
 
     useEffect(() => {
         if (!isLoading) {
@@ -111,7 +126,15 @@ export default function AdminDashboard() {
                             {t('admin.productsDesc')}
                         </p>
                     </div>
+                    <button
+                        onClick={handleCreateProduct}
+                        className="flex items-center gap-2 px-4 py-2 bg-sanital-light hover:bg-sanital-dark text-white rounded-lg transition-colors shadow-sm text-sm font-medium"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Aggiungi Prodotto
+                    </button>
                 </div>
+
 
                 <div className="w-full flex flex-col sm:flex-row gap-4">
                     {/* Category Filter */}
@@ -212,7 +235,7 @@ export default function AdminDashboard() {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div >
     );
 
     const renderOrdersTab = () => (
